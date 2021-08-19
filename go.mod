@@ -1,6 +1,6 @@
-module go-ddd
+module go-chi-ddd
 
-go 1.16
+go 1.17
 
 require (
 	github.com/gin-contrib/cors v1.3.1
@@ -31,4 +31,21 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
+)
+
+require (
+	github.com/decred/dcrd/dcrec/secp256k1/v3 v3.0.0 // indirect
+	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/goccy/go-json v0.7.4 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lestrrat-go/blackmagic v1.0.0 // indirect
+	github.com/lestrrat-go/httpcc v1.0.0 // indirect
+	github.com/lestrrat-go/iter v1.0.1 // indirect
+	github.com/lestrrat-go/option v1.0.0 // indirect
+	github.com/lestrrat-go/pdebug/v3 v3.0.1 // indirect
+	github.com/ugorji/go/codec v1.1.7 // indirect
+	golang.org/x/text v0.3.6 // indirect
 )

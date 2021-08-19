@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
-	"go-ddd/domain/entity"
-	"go-ddd/domain/repository"
-	"go-ddd/pkg/rdb"
+	"go-chi-ddd/domain/entity"
+	"go-chi-ddd/domain/repository"
+	"go-chi-ddd/pkg/rdb"
 )
 
 type user struct{}

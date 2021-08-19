@@ -2,7 +2,7 @@ package persistence
 
 import (
 	"github.com/pkg/errors"
-	"go-ddd/pkg/xerrors"
+	"go-chi-ddd/pkg/xerrors"
 	"gorm.io/gorm"
 )
 

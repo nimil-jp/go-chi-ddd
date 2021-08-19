@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go-ddd/domain/repository"
+	"go-chi-ddd/domain/repository"
 	"go.uber.org/zap"
 )
 

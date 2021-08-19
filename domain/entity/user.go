@@ -3,9 +3,9 @@ package entity
 import (
 	"time"
 
-	"go-ddd/domain"
-	"go-ddd/pkg/xerrors"
-	"go-ddd/resource/request"
+	"go-chi-ddd/domain"
+	"go-chi-ddd/pkg/xerrors"
+	"go-chi-ddd/resource/request"
 )
 
 type User struct {

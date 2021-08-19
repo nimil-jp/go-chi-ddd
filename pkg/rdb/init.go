@@ -3,7 +3,7 @@ package rdb
 import (
 	"fmt"
 
-	"go-ddd/config"
+	"go-chi-ddd/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

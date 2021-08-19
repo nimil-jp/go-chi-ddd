@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-ddd/infrastructure/email"
-	"go-ddd/infrastructure/persistence"
-	"go-ddd/interface/handler"
-	"go-ddd/usecase"
+	"go-chi-ddd/infrastructure/email"
+	"go-chi-ddd/infrastructure/persistence"
+	"go-chi-ddd/interface/handler"
+	"go-chi-ddd/usecase"
 )
 
 func inject(engine *gin.Engine) {

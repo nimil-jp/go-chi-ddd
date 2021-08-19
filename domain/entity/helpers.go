@@ -5,7 +5,7 @@ import (
 
 	"github.com/noknow-hub/go_crypto"
 	"github.com/pkg/errors"
-	"go-ddd/config"
+	"go-chi-ddd/config"
 	"golang.org/x/crypto/bcrypt"
 )
 
