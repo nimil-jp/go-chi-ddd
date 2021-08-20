@@ -34,6 +34,7 @@ type EnvType struct {
 		From string
 		Name string
 	}
+	Mode string `default:"debug"`
 }
 
 func fileExists(path string) bool {
