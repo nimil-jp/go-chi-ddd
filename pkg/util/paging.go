@@ -1,9 +1,9 @@
 package util
 
 import (
+	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -15,16 +15,16 @@ type Paging struct {
 	limit  int
 }
 
-func NewPaging(c *gin.Context) *Paging {
+func NewPaging(r *http.Request) *Paging {
 	paging := new(Paging)
-	paging.page, _ = strconv.Atoi(c.Query("page"))
+	paging.page, _ = strconv.Atoi(r.URL.Query().Get("page"))
 	if paging.page == 0 {
 		paging.page = 1
 	}
-	paging.length, _ = strconv.Atoi(c.Query("length"))
+	paging.length, _ = strconv.Atoi(r.URL.Query().Get("length"))
 
-	paging.offset, _ = strconv.Atoi(c.Query("offset"))
-	paging.limit, _ = strconv.Atoi(c.Query("limit"))
+	paging.offset, _ = strconv.Atoi(r.URL.Query().Get("offset"))
+	paging.limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 	return paging
 }
 
