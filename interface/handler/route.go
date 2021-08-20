@@ -2,8 +2,9 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/go-chi/chi/v5"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 
 	"go-chi-ddd/pkg/xerrors"
 )
@@ -72,7 +73,7 @@ func hf(handlerFunc handlerFunc) http.HandlerFunc {
 				}
 			}
 
-			//_ = err.Error(errors.Errorf("%+v", err))
+			// _ = err.Error(errors.Errorf("%+v", err))
 		}
 	}
 }

@@ -18,7 +18,8 @@ func bind(w http.ResponseWriter, r *http.Request, request interface{}) (ok bool)
 		w.WriteHeader(http.StatusInternalServerError)
 		return false
 	}
-	//Read body data to parse json
+
+	// Read body data to parse json
 	body := make([]byte, length)
 	length, err = r.Body.Read(body)
 	if err != nil && err != io.EOF {

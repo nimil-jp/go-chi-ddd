@@ -1,0 +1,17 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <GoCodeStyleSettings>
+      <option name="ADD_LEADING_SPACE_TO_COMMENTS" value="true" />
+      <option name="GROUP_STDLIB_IMPORTS" value="true" />
+      <option name="WRAP_COMP_LIT" value="5" />
+      <option name="WRAP_FUNC_PARAMS" value="5" />
+      <option name="WRAP_FUNC_RESULT" value="5" />
+    </GoCodeStyleSettings>
+    <codeStyleSettings language="go">
+      <option name="CALL_PARAMETERS_WRAP" value="5" />
+      <indentOptions>
+        <option name="SMART_TABS" value="true" />
+      </indentOptions>
+    </codeStyleSettings>
+  </code_scheme>
+</component>

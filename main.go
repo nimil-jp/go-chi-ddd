@@ -2,18 +2,19 @@ package main
 
 import (
 	"context"
-	"go-chi-ddd/infrastructure/email"
-	"go-chi-ddd/infrastructure/persistence"
-	"go-chi-ddd/interface/handler"
-	"go-chi-ddd/usecase"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"go-chi-ddd/infrastructure/email"
+	"go-chi-ddd/infrastructure/persistence"
+	"go-chi-ddd/interface/handler"
+	"go-chi-ddd/usecase"
+
 	"go-chi-ddd/infrastructure/log"
-	//"go-chi-ddd/interface/middleware"
+	// "go-chi-ddd/interface/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -22,23 +23,23 @@ import (
 func main() {
 	logger := log.Logger()
 
-	//err := jwt.SetUp(
+	// err := jwt.SetUp(
 	//	jwt.Option{
 	//		Realm:            constant.DefaultRealm,
 	//		SigningAlgorithm: jwt.HS256,
 	//		SecretKey:        []byte(config.Env.App.Secret),
 	//	},
-	//)
-	//if err != nil {
+	// )
+	// if err != nil {
 	//	panic(err)
-	//}
-	//logger.Info("Succeeded in setting up JWT.")
+	// }
+	// logger.Info("Succeeded in setting up JWT.")
 	//
 	//
-	//engine.Use(middleware.Log(logger, time.RFC3339, false))
-	//engine.Use(middleware.RecoveryWithLog(logger, true))
+	// engine.Use(middleware.Log(logger, time.RFC3339, false))
+	// engine.Use(middleware.RecoveryWithLog(logger, true))
 	//
-	//engine.GET("health", func(c *gin.Context) { c.Status(http.StatusOK) })
+	// engine.GET("health", func(c *gin.Context) { c.Status(http.StatusOK) })
 
 	// cors
 
@@ -64,17 +65,21 @@ func main() {
 	// ----- handler -----
 	userHandler := handler.NewUser(userUseCase)
 
-	handler.Get(r, "/health", func(w http.ResponseWriter, r *http.Request) error {
-		w.WriteHeader(http.StatusOK)
-		return nil
-	})
-	r.Route("/user", func(r chi.Router) {
-		handler.Post(r, "/", userHandler.Create)
-		handler.Post(r, "/login", userHandler.Login)
-		handler.Get(r, "/refresh-token", userHandler.RefreshToken)
-		handler.Patch(r, "/reset-password-request", userHandler.ResetPasswordRequest)
-		handler.Patch(r, "/reset-password", userHandler.ResetPassword)
-	})
+	handler.Get(
+		r, "/health", func(w http.ResponseWriter, r *http.Request) error {
+			w.WriteHeader(http.StatusOK)
+			return nil
+		},
+	)
+	r.Route(
+		"/user", func(r chi.Router) {
+			handler.Post(r, "/", userHandler.Create)
+			handler.Post(r, "/login", userHandler.Login)
+			handler.Get(r, "/refresh-token", userHandler.RefreshToken)
+			handler.Patch(r, "/reset-password-request", userHandler.ResetPasswordRequest)
+			handler.Patch(r, "/reset-password", userHandler.ResetPassword)
+		},
+	)
 
 	logger.Info("Succeeded in setting up routes.")
 
