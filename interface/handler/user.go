@@ -29,7 +29,7 @@ func (u User) Create(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	err = writeJson(w, http.StatusCreated, id)
+	err = WriteJson(w, http.StatusCreated, id)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (u User) ResetPasswordRequest(w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	err = writeJson(w, http.StatusOK, res)
+	err = WriteJson(w, http.StatusOK, res)
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (u User) Login(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	err = writeJson(w, http.StatusOK, res)
+	err = WriteJson(w, http.StatusOK, res)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (u User) RefreshToken(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	err = writeJson(w, http.StatusCreated, res)
+	err = WriteJson(w, http.StatusCreated, res)
 	if err != nil {
 		return err
 	}

@@ -8,49 +8,17 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"go-chi-ddd/infrastructure/email"
+	"go-chi-ddd/infrastructure/log"
 	"go-chi-ddd/infrastructure/persistence"
 	"go-chi-ddd/interface/handler"
+	"go-chi-ddd/interface/middleware"
 	"go-chi-ddd/usecase"
-
-	"go-chi-ddd/infrastructure/log"
-	// "go-chi-ddd/interface/middleware"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
 	logger := log.Logger()
-
-	// err := jwt.SetUp(
-	//	jwt.Option{
-	//		Realm:            constant.DefaultRealm,
-	//		SigningAlgorithm: jwt.HS256,
-	//		SecretKey:        []byte(config.Env.App.Secret),
-	//	},
-	// )
-	// if err != nil {
-	//	panic(err)
-	// }
-	// logger.Info("Succeeded in setting up JWT.")
-	//
-	//
-	// engine.Use(middleware.Log(logger, time.RFC3339, false))
-	// engine.Use(middleware.RecoveryWithLog(logger, true))
-	//
-	// engine.GET("health", func(c *gin.Context) { c.Status(http.StatusOK) })
-
-	// cors
-
-	r := chi.NewRouter()
-
-	// A good base middleware stack
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-	r.Use(cors)
 
 	// dependencies injection
 	// ----- infrastructure -----
@@ -65,19 +33,27 @@ func main() {
 	// ----- handler -----
 	userHandler := handler.NewUser(userUseCase)
 
-	handler.Get(
+	// api
+
+	r := chi.NewRouter()
+
+	// A good base middleware stack
+	r.Use(middleware.Cors)
+
+	get(
 		r, "/health", func(w http.ResponseWriter, r *http.Request) error {
 			w.WriteHeader(http.StatusOK)
 			return nil
 		},
 	)
+
 	r.Route(
 		"/user", func(r chi.Router) {
-			handler.Post(r, "/", userHandler.Create)
-			handler.Post(r, "/login", userHandler.Login)
-			handler.Get(r, "/refresh-token", userHandler.RefreshToken)
-			handler.Patch(r, "/reset-password-request", userHandler.ResetPasswordRequest)
-			handler.Patch(r, "/reset-password", userHandler.ResetPassword)
+			post(r, "/", userHandler.Create)
+			post(r, "/login", userHandler.Login)
+			get(r, "/refresh-token", userHandler.RefreshToken)
+			patch(r, "/reset-password-request", userHandler.ResetPasswordRequest)
+			patch(r, "/reset-password", userHandler.ResetPassword)
 		},
 	)
 
@@ -115,14 +91,4 @@ func main() {
 	}
 
 	logger.Info("Server exiting")
-}
-
-func cors(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Headers", "*")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-	}
-
-	return http.HandlerFunc(fn)
 }

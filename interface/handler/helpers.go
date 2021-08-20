@@ -34,3 +34,16 @@ func bind(w http.ResponseWriter, r *http.Request, request interface{}) (ok bool)
 
 	return true
 }
+
+func WriteJson(w http.ResponseWriter, code int, response interface{}) error {
+	w.WriteHeader(code)
+	b, err := json.Marshal(response)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return err
+	}
+	return nil
+}
