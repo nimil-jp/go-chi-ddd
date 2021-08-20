@@ -1,4 +1,4 @@
-package api
+package constant
 
 import (
 	"go-chi-ddd/config"
