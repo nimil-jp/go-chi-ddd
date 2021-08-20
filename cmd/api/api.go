@@ -1,7 +1,8 @@
-package main
+package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"go-chi-ddd/config"
 	"go-chi-ddd/infrastructure/email"
 	"go-chi-ddd/infrastructure/log"
 	"go-chi-ddd/infrastructure/persistence"
@@ -17,7 +19,7 @@ import (
 	"go-chi-ddd/usecase"
 )
 
-func main() {
+func Execute() {
 	logger := log.Logger()
 
 	// dependencies injection
@@ -60,13 +62,8 @@ func main() {
 	logger.Info("Succeeded in setting up routes.")
 
 	// serve
-	var port = ":8080"
-	if portEnv := os.Getenv("PORT"); portEnv != "" {
-		port = portEnv
-	}
-
 	srv := &http.Server{
-		Addr:    port,
+		Addr:    fmt.Sprintf(":%s", config.Env.Port),
 		Handler: r,
 	}
 
