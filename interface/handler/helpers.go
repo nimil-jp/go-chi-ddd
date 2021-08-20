@@ -2,20 +2,34 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
+	"io"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 func newCtx() context.Context {
 	return context.Background()
 }
 
-func bind(c *gin.Context, request interface{}) (ok bool) {
-	if err := c.BindJSON(request); err != nil {
-		c.Status(http.StatusBadRequest)
+func bind(w http.ResponseWriter, r *http.Request, request interface{}) (ok bool) {
+	length, err := strconv.Atoi(r.Header.Get("Content-Length"))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		return false
-	} else {
-		return true
 	}
+	//Read body data to parse json
+	body := make([]byte, length)
+	length, err = r.Body.Read(body)
+	if err != nil && err != io.EOF {
+		w.WriteHeader(http.StatusInternalServerError)
+		return false
+	}
+
+	if err := json.Unmarshal(body[:length], &request); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return false
+	}
+
+	return true
 }

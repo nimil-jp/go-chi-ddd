@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"go-chi-ddd/resource/request"
 	"go-chi-ddd/usecase"
 )
@@ -12,22 +11,16 @@ type User struct {
 	userUseCase usecase.IUser
 }
 
-func NewUser(route *gin.RouterGroup, uuc usecase.IUser) {
-	handler := User{
+func NewUser(uuc usecase.IUser) User {
+	return User{
 		userUseCase: uuc,
 	}
-
-	post(route, "", handler.Create)
-	post(route, "login", handler.Login)
-	get(route, "refresh-token", handler.RefreshToken)
-	patch(route, "reset-password-request", handler.ResetPasswordRequest)
-	patch(route, "reset-password", handler.ResetPassword)
 }
 
-func (u User) Create(c *gin.Context) error {
+func (u User) Create(w http.ResponseWriter, r *http.Request) error {
 	var req request.UserCreate
 
-	if !bind(c, &req) {
+	if !bind(w, r, &req) {
 		return nil
 	}
 
@@ -36,14 +29,17 @@ func (u User) Create(c *gin.Context) error {
 		return err
 	}
 
-	c.JSON(http.StatusCreated, id)
+	err = writeJson(w, http.StatusCreated, id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (u User) ResetPasswordRequest(c *gin.Context) error {
+func (u User) ResetPasswordRequest(w http.ResponseWriter, r *http.Request) error {
 	var req request.UserResetPasswordRequest
 
-	if !bind(c, &req) {
+	if !bind(w, r, &req) {
 		return nil
 	}
 
@@ -52,14 +48,17 @@ func (u User) ResetPasswordRequest(c *gin.Context) error {
 		return err
 	}
 
-	c.JSON(http.StatusOK, res)
+	err = writeJson(w, http.StatusOK, res)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (u User) ResetPassword(c *gin.Context) error {
+func (u User) ResetPassword(w http.ResponseWriter, r *http.Request) error {
 	var req request.UserResetPassword
 
-	if !bind(c, &req) {
+	if !bind(w, r, &req) {
 		return nil
 	}
 
@@ -68,14 +67,14 @@ func (u User) ResetPassword(c *gin.Context) error {
 		return err
 	}
 
-	c.Status(http.StatusOK)
+	w.WriteHeader(http.StatusOK)
 	return nil
 }
 
-func (u User) Login(c *gin.Context) error {
+func (u User) Login(w http.ResponseWriter, r *http.Request) error {
 	var req request.UserLogin
 
-	if !bind(c, &req) {
+	if !bind(w, r, &req) {
 		return nil
 	}
 
@@ -85,25 +84,31 @@ func (u User) Login(c *gin.Context) error {
 	}
 
 	if res == nil {
-		c.Status(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusUnauthorized)
 		return nil
 	}
 
-	c.JSON(http.StatusOK, res)
+	err = writeJson(w, http.StatusOK, res)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (u User) RefreshToken(c *gin.Context) error {
-	res, err := u.userUseCase.RefreshToken(c.Query("refresh_token"))
+func (u User) RefreshToken(w http.ResponseWriter, r *http.Request) error {
+	res, err := u.userUseCase.RefreshToken(r.URL.Query().Get("refresh_token"))
 	if err != nil {
 		return err
 	}
 
 	if res == nil {
-		c.Status(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusUnauthorized)
 		return nil
 	}
 
-	c.JSON(http.StatusOK, res)
+	err = writeJson(w, http.StatusCreated, res)
+	if err != nil {
+		return err
+	}
 	return nil
 }

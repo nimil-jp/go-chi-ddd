@@ -3,8 +3,8 @@ module go-chi-ddd
 go 1.17
 
 require (
-	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.3
+	github.com/go-chi/chi/v5 v5.0.3
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.9.0

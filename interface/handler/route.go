@@ -1,46 +1,53 @@
 package handler
 
 import (
+	"encoding/json"
+	"github.com/go-chi/chi/v5"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/pkg/errors"
 	"go-chi-ddd/pkg/xerrors"
 )
 
-type handlerFunc func(c *gin.Context) error
+type handlerFunc func(w http.ResponseWriter, r *http.Request) error
 
-func get(group *gin.RouterGroup, relativePath string, handlerFunc handlerFunc) {
-	group.GET(relativePath, hf(handlerFunc))
+func Get(r chi.Router, relativePath string, handlerFunc handlerFunc) {
+	r.Get(relativePath, hf(handlerFunc))
 }
 
-func post(group *gin.RouterGroup, relativePath string, handlerFunc handlerFunc) {
-	group.POST(relativePath, hf(handlerFunc))
+func Post(r chi.Router, relativePath string, handlerFunc handlerFunc) {
+	r.Post(relativePath, hf(handlerFunc))
 }
 
-func put(group *gin.RouterGroup, relativePath string, handlerFunc handlerFunc) {
-	group.PUT(relativePath, hf(handlerFunc))
+func Put(r chi.Router, relativePath string, handlerFunc handlerFunc) {
+	r.Put(relativePath, hf(handlerFunc))
 }
 
-func patch(group *gin.RouterGroup, relativePath string, handlerFunc handlerFunc) {
-	group.PATCH(relativePath, hf(handlerFunc))
+func Patch(r chi.Router, relativePath string, handlerFunc handlerFunc) {
+	r.Patch(relativePath, hf(handlerFunc))
 }
 
-func delete(group *gin.RouterGroup, relativePath string, handlerFunc handlerFunc) {
-	group.DELETE(relativePath, hf(handlerFunc))
+func Delete(r chi.Router, relativePath string, handlerFunc handlerFunc) {
+	r.Delete(relativePath, hf(handlerFunc))
 }
 
-func options(group *gin.RouterGroup, relativePath string, handlerFunc handlerFunc) {
-	group.OPTIONS(relativePath, hf(handlerFunc))
+func Options(r chi.Router, relativePath string, handlerFunc handlerFunc) {
+	r.Options(relativePath, hf(handlerFunc))
 }
 
-func head(group *gin.RouterGroup, relativePath string, handlerFunc handlerFunc) {
-	group.HEAD(relativePath, hf(handlerFunc))
+func Head(r chi.Router, relativePath string, handlerFunc handlerFunc) {
+	r.Head(relativePath, hf(handlerFunc))
 }
 
-func hf(handlerFunc handlerFunc) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		err := handlerFunc(c)
+func hf(handlerFunc handlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if w.Header().Get("Content-Type") == "" {
+			// Per spec, UTF-8 is the default, and the charset parameter should not
+			// be necessary. But some clients (eg: Chrome) think otherwise.
+			// Since json.Marshal produces UTF-8, setting the charset parameter is a
+			// safe option.
+			w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		}
+		err := handlerFunc(w, r)
 
 		if err != nil {
 			switch v := err.(type) {
@@ -48,19 +55,37 @@ func hf(handlerFunc handlerFunc) gin.HandlerFunc {
 				if v.StatusOk() {
 					return
 				} else {
-					c.JSON(v.StatusCode(), v.Message())
+					err := writeJson(w, v.StatusCode(), v.Message())
+					if err != nil {
+						return
+					}
 				}
 			case *xerrors.Validation:
-				c.JSON(http.StatusBadRequest, v)
+				err := writeJson(w, http.StatusBadRequest, v)
+				if err != nil {
+					return
+				}
 			default:
-				if gin.Mode() == gin.DebugMode {
-					c.String(http.StatusInternalServerError, "%+v", v)
-				} else {
-					c.Status(http.StatusInternalServerError)
+				err := writeJson(w, http.StatusInternalServerError, v)
+				if err != nil {
+					return
 				}
 			}
 
-			_ = c.Error(errors.Errorf("%+v", err))
+			//_ = err.Error(errors.Errorf("%+v", err))
 		}
 	}
+}
+
+func writeJson(w http.ResponseWriter, code int, response interface{}) error {
+	w.WriteHeader(code)
+	b, err := json.Marshal(response)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		return err
+	}
+	return nil
 }
