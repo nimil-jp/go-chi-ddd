@@ -1,17 +1,12 @@
-package api
+package config
 
 import (
-	"go-chi-ddd/config"
 	"go-chi-ddd/constant"
 )
 
 var (
 	modeName = constant.DebugMode
 )
-
-func init() {
-	SetMode(config.Env.Mode)
-}
 
 // SetMode sets mode according to input string.
 func SetMode(value string) {

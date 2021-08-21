@@ -1,27 +1,27 @@
 package log
 
 import (
-	"go-chi-ddd/cmd/api"
+	"go-chi-ddd/config"
 	"go-chi-ddd/domain/repository"
 	"go.uber.org/zap"
 )
 
 func init() {
-	var config zap.Config
+	var zConfig zap.Config
 	var zapLog *zap.Logger
 
-	if api.IsDebugging() {
-		config = zap.NewDevelopmentConfig()
+	if config.IsDebugging() {
+		zConfig = zap.NewDevelopmentConfig()
 	} else {
-		config = zap.NewProductionConfig()
+		zConfig = zap.NewProductionConfig()
 	}
 
-	config.DisableStacktrace = true
+	zConfig.DisableStacktrace = true
 
-	if api.IsDebugging() {
-		zapLog, _ = config.Build(zap.AddCaller(), zap.AddCallerSkip(1))
+	if config.IsDebugging() {
+		zapLog, _ = zConfig.Build(zap.AddCaller(), zap.AddCallerSkip(1))
 	} else {
-		zapLog, _ = config.Build(zap.AddCallerSkip(1))
+		zapLog, _ = zConfig.Build(zap.AddCallerSkip(1))
 	}
 
 	log = logger{

@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"go-chi-ddd/config"
+	"go-chi-ddd/constant"
 	"go-chi-ddd/infrastructure/email"
 	"go-chi-ddd/infrastructure/log"
 	"go-chi-ddd/infrastructure/persistence"
@@ -20,6 +21,7 @@ import (
 )
 
 func Execute() {
+	config.SetMode(constant.ReleaseMode)
 	logger := log.Logger()
 
 	// dependencies injection
