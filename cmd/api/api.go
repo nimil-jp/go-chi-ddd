@@ -21,7 +21,7 @@ import (
 )
 
 func Execute() {
-	config.SetMode(constant.ReleaseMode)
+	config.SetMode(constant.DebugMode)
 	logger := log.Logger()
 
 	// dependencies injection
